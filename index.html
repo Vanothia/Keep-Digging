@@ -19,7 +19,7 @@
 :root[data-theme="dark"]{--bg:#14110f;--panel:#1e1915;--fg:#e8dcc6;--mut:#9a8f7c;--line:#3a3128;--acc:#c9a24a;color-scheme:dark}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.6 "Chiron GoRound TC","Noto Sans TC","Microsoft JhengHei","PingFang TC",sans-serif}
-.wrap{max-width:1200px;margin:0 auto;padding:14px}
+.wrap{max-width:max(1200px,min(96vw,calc((100vh - 140px) * 1.5)));margin:0 auto;padding:14px}
 h1{font-size:20px;margin:0 0 2px;letter-spacing:.04em}
 .sub{color:var(--mut);margin:0 0 12px;font-size:13px}
 
