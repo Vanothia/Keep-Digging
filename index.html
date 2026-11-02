@@ -600,7 +600,8 @@ body.phoneUI{--side:max(calc((100vw - var(--vh,1vh)*150)/2),calc(var(--vh,1vh)*2
 body.phoneUI #tpad .lt{flex-direction:column-reverse;gap:calc(var(--vh,1vh)*5);width:var(--side);align-items:center}
 body.phoneUI #tpad .kA{width:min(calc(var(--side)*.62),calc(var(--vh,1vh)*26));height:calc(var(--vh,1vh)*16)}
 body.phoneUI #tpad .kS{width:min(calc(var(--side)*.78),calc(var(--vh,1vh)*34));height:calc(var(--vh,1vh)*30)}
-body.phoneUI #tpad .arr{--cell:min(calc(var(--side)*.31),calc(var(--vh,1vh)*17));grid-template-columns:var(--cell) var(--cell) var(--cell);grid-template-rows:var(--cell) var(--cell);gap:calc(var(--vh,1vh)*1);width:var(--side);justify-content:center}
+body.phoneUI #tpad .arr{align-self:flex-start;--cell:min(calc(var(--side)*.29),calc(var(--vh,1vh)*22));--gp:calc(var(--cell)*.13);margin-top:calc(var(--vh,1vh)*39.5 - (var(--cell)*3 + var(--gp)*2)/2);grid-template-columns:var(--cell) var(--cell) var(--cell);grid-template-rows:var(--cell) var(--cell) var(--cell);gap:var(--gp);width:var(--side);justify-content:center}
+body.phoneUI #tpad .arr .kU{grid-column:2;grid-row:1}body.phoneUI #tpad .arr .kL{grid-column:1;grid-row:2}body.phoneUI #tpad .arr .kR{grid-column:3;grid-row:2}body.phoneUI #tpad .arr .kD{grid-column:2;grid-row:3}
 body.phoneUI #tpad .arr .tk{width:var(--cell);height:var(--cell);font-size:calc(var(--cell)*.36);border-width:calc(var(--vh,1vh)*1.3)}
 body.phoneUI #tpad .tk{font-size:calc(var(--vh,1vh)*4.2);border-width:calc(var(--vh,1vh)*1.5)}
 body.phoneUI #tpad .tk small{font-size:calc(var(--vh,1vh)*2.4);margin-top:calc(var(--vh,1vh)*.5)}
@@ -752,6 +753,11 @@ small .echoHint,.echoHint{display:inline-block;color:#7fb4e0;font-weight:700;fon
 </div>
 </div>
 <script>
+// ===== 畫面更新最多每秒 60 次：高更新率螢幕（120／144／165Hz）不會因此多跑兩三倍的運算 =====
+(function(){const raf=window.requestAnimationFrame.bind(window);let q=[],last=0,pending=false;
+ function pump(ts){if(ts-last<15.2){raf(pump);return}last=ts;pending=false;const run=q;q=[];for(const f of run){try{f(ts)}catch(e){console.error(e)}}}
+ window.requestAnimationFrame=function(cb){q.push(cb);if(!pending){pending=true;raf(pump)}return q.length}})();
+
 const W=22,H=16,CS=40;
 const COL=['#fccb74','#6f8f9b','#96a468','#4d4540','#7a2018','#2e2729'];
 const NM=['光','水','食物'];
@@ -4241,6 +4247,11 @@ function clueRemindTick(){if(!run||dead||paused||godOpen||openC>=0||chapOn||menu
  else if(st===2&&age>=50){SD.rmdStep=3;SD.rmdLast=t;SD.rmdT=age;try{tutTip('clueOpen','……那是什麼？','按數字鍵 1～9，或點一下線索格，就能打開線索（現在是第 '+key+' 格）')}catch(_){}}
  else if(st>=3&&age>=(SD.rmdT||50)+40){SD.rmdT=age;SD.rmdLast=t;SD.rmdStep=st+1;seqArr([st%2?pickFresh(P,'rmdP'):pickFresh(V,'rmdV')])}}
 setInterval(()=>{try{clueRemindTick()}catch(_){}},500);
+
+// ===== 觸控裝置：把所有手繪框（SVG 外框）換成 PNG，避免部分手機瀏覽器畫框時缺邊 =====
+function rasterFrames(){const jobs=[];for(const sh of document.styleSheets){let rules;try{rules=sh.cssRules}catch(_){continue}for(const r of rules){if(!r.style)continue;const src=r.style.borderImageSource;if(!src||src.indexOf('data:image/svg')<0)continue;const m=src.match(/url\("?(data:image\/svg[^")]*)"?\)/);if(!m)continue;jobs.push([r,m[1]])}}
+ const cache={};jobs.forEach(([r,u])=>{const go=png=>{const sl=r.style.borderImageSlice||'16 fill';const imp=r.style.getPropertyPriority('border-image-source')||r.style.getPropertyPriority('border-image');r.style.setProperty('border-image-source','url('+png+')',imp);r.style.setProperty('border-image-slice',sl.replace(/(\d+(?:\.\d+)?)/g,x=>String(+x*3)),imp)};
+  if(cache[u]){cache[u].then(go);return}cache[u]=new Promise(res=>{const im=new Image();im.onload=()=>{try{let w=im.naturalWidth||120,h=im.naturalHeight||48;const vb=decodeURIComponent(u).match(/viewBox=['"]\s*[\d.\-]+\s+[\d.\-]+\s+([\d.]+)\s+([\d.]+)/);if(vb){w=+vb[1];h=+vb[2]}const c=document.createElement('canvas');c.width=Math.round(w*3);c.height=Math.round(h*3);c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/png'))}catch(_){}};im.src=u});cache[u].then(go)})}
 function hideTitle(cb){const T=$('titleov');T.classList.add('out');setTimeout(()=>{T.hidden=true;titleOn=false;T.classList.remove('out');cb&&cb()},900)}
 function tResetWire(p,T){$('tReset').addEventListener('click',()=>{sfx('click');p.innerHTML='<div>確定要重置遊戲嗎？</div><div class="tpi">存檔、看過的結局、天數都會被清除，<br>回到第一次打開時的樣子。</div><div class="tpRow"><button class="big" id="tRsY">對</button><button class="big" id="tRsN">先不要</button></div>';
   $('tRsN').addEventListener('click',()=>{sfx('click');p.remove();T.querySelector('.ttlBtns').style.visibility='';$('tTrace').click()});
@@ -4300,7 +4311,7 @@ $('tTrace').addEventListener('click',e=>{e.stopImmediatePropagation();try{audioI
 
 // ===== 平板的操作區：遊戲畫面下方，像鍵盤一樣的按鍵（劇情紀錄 A、空白鍵、方向鍵）=====
 (function(){const coarse=window.matchMedia&&matchMedia('(pointer: coarse)').matches,big=Math.min(screen.width,screen.height)>=600;let pv=0;try{pv=+localStorage.getItem('cave-padPreview')||0}catch(_){}let pp=0;try{pp=+localStorage.getItem('cave-phonePreview')||0}catch(_){}const phone=(coarse&&!big)||pp;if(!(coarse&&big)&&!pv&&!phone)return;
- document.body.classList.add('touchUI');if(phone){document.body.classList.add('phoneUI');const setVh=()=>{const h=(window.visualViewport&&window.visualViewport.height)||window.innerHeight;document.documentElement.style.setProperty('--vh',(h/100)+'px')};setVh();addEventListener('resize',setVh);try{visualViewport.addEventListener('resize',setVh)}catch(_){}addEventListener('orientationchange',()=>setTimeout(setVh,300));const rh=document.createElement('div');rh.id='rotateHint';rh.innerHTML='<div class="rhIcon">📱</div><div>請將手機橫放</div><small>（橫向才能看清楚礦坑裡的一切）</small>';document.body.appendChild(rh);
+ document.body.classList.add('touchUI');try{rasterFrames()}catch(_){}if(phone){document.body.classList.add('phoneUI');const setVh=()=>{const h=(window.visualViewport&&window.visualViewport.height)||window.innerHeight;document.documentElement.style.setProperty('--vh',(h/100)+'px')};setVh();addEventListener('resize',setVh);try{visualViewport.addEventListener('resize',setVh)}catch(_){}addEventListener('orientationchange',()=>setTimeout(setVh,300));const rh=document.createElement('div');rh.id='rotateHint';rh.innerHTML='<div class="rhIcon">📱</div><div>請將手機橫放</div><small>（橫向才能看清楚礦坑裡的一切）</small>';document.body.appendChild(rh);
   const fs=document.createElement('button');fs.id='fsBtn';fs.textContent='全螢幕';fs.addEventListener('click',e=>{e.stopPropagation();const d=document.documentElement;try{if(!document.fullscreenElement&&d.requestFullscreen){d.requestFullscreen().then(()=>{try{screen.orientation.lock('landscape').catch(()=>{})}catch(_){}}).catch(()=>{})}else if(document.exitFullscreen)document.exitFullscreen()}catch(_){}});if(document.documentElement.requestFullscreen)document.body.appendChild(fs);
   if(pp&&!(coarse&&!big)){const x=document.createElement('button');x.id='ppOff';x.textContent='結束手機版預覽';x.addEventListener('click',e=>{e.stopPropagation();try{localStorage.setItem('cave-phonePreview','0')}catch(_){}location.reload()});document.body.appendChild(x)}}const st=$('stage'),pad=document.createElement('div');pad.id='tpad';
  pad.innerHTML='<div class="lt"><button class="tk kA" data-k="a" data-c="KeyA">A<small>劇情紀錄</small></button><button class="tk kS" data-k=" " data-c="Space">空白鍵<small>直落</small></button></div><div class="arr"><button class="tk kU" data-k="ArrowUp" data-c="ArrowUp" style="flex-direction:column">▲<small>旋轉</small></button><button class="tk kL" data-k="ArrowLeft" data-c="ArrowLeft" data-r="1">◀</button><button class="tk kD" data-k="ArrowDown" data-c="ArrowDown" data-r="1">▼</button><button class="tk kR" data-k="ArrowRight" data-c="ArrowRight" data-r="1">▶</button></div>';
@@ -4308,8 +4319,8 @@ $('tTrace').addEventListener('click',e=>{e.stopImmediatePropagation();try{audioI
  {const b0=pad.querySelector('.tk');const src=b0&&getComputedStyle(b0).borderImageSource;const m=src&&src.match(/url\("?(.*?)"?\)$/);if(m){const im=new Image();im.onload=()=>{try{const c=document.createElement('canvas');c.width=360;c.height=144;c.getContext('2d').drawImage(im,0,0,360,144);pad.style.setProperty('--tkf','url('+c.toDataURL('image/png')+')');pad.classList.add('pngf')}catch(_){}};im.src=m[1]}}
  // 操作區的背景：遊戲畫面下半部（礦道地面）像倒影一樣往下延伸，壓暗、模糊；上緣用漸層接起來，再加上緩緩漂動的空氣微粒
  {const bc=document.createElement('canvas');bc.id='tpadBg';pad.prepend(bc);const buf=document.createElement('canvas');let lastSnap=0;const motes=Array.from({length:36},()=>({x:Math.random(),y:Math.random(),z:.3+Math.random()*.9,ph:Math.random()*6,r:.6+Math.random()*1.3,dark:Math.random()<.35}));
-  (function lp(ts){requestAnimationFrame(lp);if(!document.body.classList.contains('touchUI'))return;const W2=pad.clientWidth,H2=pad.clientHeight;if(!W2||!H2)return;const D=Math.min(2,window.devicePixelRatio||1);if(bc.width!==Math.round(W2*D)||bc.height!==Math.round(H2*D)){bc.width=Math.round(W2*D);bc.height=Math.round(H2*D);buf.width=bc.width;buf.height=bc.height;lastSnap=0}
-   const cvs=$('cv');if(ts-lastSnap>700&&cvs&&cvs.width){lastSnap=ts;const b=buf.getContext('2d');b.save();b.clearRect(0,0,buf.width,buf.height);
+  (function lp(ts){requestAnimationFrame(lp);if(!document.body.classList.contains('touchUI'))return;if(ts-(lp.__t||0)<32)return;lp.__t=ts;const W2=pad.clientWidth,H2=pad.clientHeight;if(!W2||!H2)return;const D=Math.min(2,window.devicePixelRatio||1);if(bc.width!==Math.round(W2*D)||bc.height!==Math.round(H2*D)){bc.width=Math.round(W2*D);bc.height=Math.round(H2*D);buf.width=Math.round(bc.width/2);buf.height=Math.round(bc.height/2);lastSnap=0}
+   const cvs=$('cv');if(ts-lastSnap>2500&&cvs&&cvs.width){lastSnap=ts;const b=buf.getContext('2d');b.save();b.clearRect(0,0,buf.width,buf.height);
     // 倒影的來源要和遊戲畫面上「看得到的東西」一致：標題時用標題插畫；黑幕、結局等全畫面演出時是黑的；平常遊玩時用遊戲畫面
     const vis=id=>{const e=$(id);return e&&!e.hidden&&getComputedStyle(e).display!=='none'&&+getComputedStyle(e).opacity>.5};
     let src=null,sx=0,sy=0,sw=0,sh=0,flt='brightness(.55) saturate(.9)';
@@ -4318,7 +4329,7 @@ $('tTrace').addEventListener('click',e=>{e.stopImmediatePropagation();try{audioI
     if(src){b.filter='blur('+(1.5*D)+'px) '+flt.replace('brightness(.55)','brightness(.62)').replace('brightness(.6)','brightness(.62)');const ar=sw/sh,dw=buf.width,dh=buf.height;let cw2=sw,ch2=sh,cx2=sx,cy2=sy;if(ar>dw/dh){cw2=sh*dw/dh;cx2=sx+(sw-cw2)/2}else{ch2=sw*dh/dw;cy2=sy+(sh-ch2)}b.translate(0,dh);b.scale(1,-1);b.drawImage(src,cx2,cy2,cw2,ch2,0,0,dw,dh)}else{b.fillStyle='#050403';b.fillRect(0,0,buf.width,buf.height)}b.restore();
     const g2=b.createLinearGradient(0,0,0,buf.height);g2.addColorStop(0,'rgba(8,6,5,.25)');g2.addColorStop(.5,'rgba(8,6,5,.35)');g2.addColorStop(1,'rgba(8,6,5,.8)');b.fillStyle=g2;b.fillRect(0,0,buf.width,buf.height);
     const vg=b.createRadialGradient(buf.width/2,buf.height*.4,buf.height*.2,buf.width/2,buf.height*.4,buf.width*.6);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.55)');b.fillStyle=vg;b.fillRect(0,0,buf.width,buf.height)}
-   const c=bc.getContext('2d');c.clearRect(0,0,bc.width,bc.height);const T=ts/1000;{const N=14,bh=bc.height/N;for(let q=0;q<N;q++){const off=Math.sin(T*1.3+q*.9)*(1+q*.35)*D;c.drawImage(buf,0,q*bh,bc.width,bh+1,off,q*bh,bc.width,bh+1)}}
+   const c=bc.getContext('2d');c.clearRect(0,0,bc.width,bc.height);const T=ts/1000;{const N=14,bh=bc.height/N,sbh=buf.height/N;for(let q=0;q<N;q++){const off=Math.sin(T*1.3+q*.9)*(1+q*.35)*D;c.drawImage(buf,0,q*sbh,buf.width,sbh+.5,off,q*bh,bc.width,bh+1)}}
    motes.forEach(p=>{const x=((p.x*bc.width+Math.sin(T*.4+p.ph)*14*p.z*D+T*4*p.z*D)%bc.width+bc.width)%bc.width,y=((p.y*bc.height+Math.cos(T*.33+p.ph*1.3)*8*p.z*D-T*3*p.z*D)%bc.height+bc.height)%bc.height;c.fillStyle=p.dark?'rgba(8,5,4,'+(.6*p.z)+')':'rgba(240,215,170,'+(.35*p.z)+')';c.beginPath();c.arc(x,y,p.r*p.z*D,0,7);c.fill()})})(0)}
  const fire=(type,b,rep)=>document.dispatchEvent(new KeyboardEvent(type,{key:b.dataset.k,code:b.dataset.c,bubbles:true,cancelable:true,repeat:!!rep}));
  pad.querySelectorAll('.tk').forEach(b=>{let t1=0,t2=0;const down=e=>{e.preventDefault();b.classList.add('on');fire('keydown',b);if(b.dataset.r){t1=setTimeout(()=>{t2=setInterval(()=>fire('keydown',b,1),70)},220)}};
