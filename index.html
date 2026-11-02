@@ -1,6 +1,11 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="請繼續挖掘">
+<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-192.png">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>請繼續挖掘 Demo</title>
@@ -557,8 +562,11 @@ body.touchUI .stage{border-bottom-color:transparent}
 #tpad>#tpadBg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
 #tpad>.lt,#tpad>.arr{position:relative;z-index:1}
 #tpad .tk{position:relative;-webkit-appearance:none;appearance:none;margin:0;box-sizing:border-box;background:none;border:1.3cqw solid transparent;border-image:url("data:image/svg+xml,%3Csvg%20preserveAspectRatio%3D%27none%27%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20120%2048%27%3E%3Crect%20x%3D%273%27%20y%3D%273%27%20width%3D%27114%27%20height%3D%2742%27%20fill%3D%27%23070505%27%20fill-opacity%3D%27.94%27/%3E%3Cpath%20d%3D%27M3.2%204.2%20L38%203.3%20L82%204.5%20L116.6%203.5%20L116%2024.5%20L116.9%2044.4%20L79%2043.6%20L41%2044.7%20L3.8%2043.9%20L3.1%2023.5%20Z%27%20fill%3D%27none%27%20stroke%3D%27%23cbbd9d%27%20stroke-width%3D%272.3%27%20stroke-linejoin%3D%27round%27/%3E%3Cpath%20d%3D%27M8.2%208.6%20L60%208.1%20L111.8%208.7%20L111.4%2039.6%20L60%2040.2%20L8.6%2039.4%20Z%27%20fill%3D%27none%27%20stroke%3D%27%23cbbd9d%27%20stroke-opacity%3D%27.42%27%20stroke-width%3D%271%27/%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27%23cbbd9d%27%20stroke-width%3D%271.5%27%20stroke-linecap%3D%27round%27%3E%3Cpath%20d%3D%27M4%2014%20Q1.6%205.5%2012%202.6%20M6%206.5%20Q11%202.2%2013.5%207%27/%3E%3Cpath%20d%3D%27M116%2014%20Q118.4%205.5%20108%202.6%20M114%206.5%20Q109%202.2%20106.5%207%27/%3E%3Cpath%20d%3D%27M4%2034%20Q1.6%2042.5%2012%2045.4%20M6%2041.5%20Q11%2045.8%2013.5%2041%27/%3E%3Cpath%20d%3D%27M116%2034%20Q118.4%2042.5%20108%2045.4%20M114%2041.5%20Q109%2045.8%20106.5%2041%27/%3E%3C/g%3E%3C/svg%3E") 16 fill / 1.3cqw stretch;color:#7a6f5c;font-family:inherit;font-size:2cqw;letter-spacing:.2em;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:none;-webkit-tap-highlight-color:transparent;text-shadow:0 0 3px #000;line-height:1.1}
-#tpad .tk.on{color:#e2d4b6}
+#tpad .tk.on{color:#e2d4b6;transform:scale(.95)}
+#tpad .tk::after{content:'';position:absolute;inset:-2px;pointer-events:none;opacity:0;transition:opacity .18s;background:radial-gradient(ellipse 85% 75% at 50% 100%,rgba(255,206,120,.55),rgba(255,190,100,.18) 55%,transparent 80%)}
+#tpad .tk.on::after{opacity:1;transition:opacity .04s}
 #tpad .tk.on small{color:#b8ab90}
+#tpad.pngf .tk{border-image-source:var(--tkf);border-image-slice:48 fill}
 #tpad .tk small{display:block;font-size:1.25cqw;letter-spacing:.12em;color:#5c5446;margin-top:.4cqw}
 #tpad .tk{filter:brightness(.78)}
 #tpad .tk.on{filter:brightness(1.15);text-shadow:0 0 1cqw rgba(255,220,150,.8)}
@@ -583,18 +591,20 @@ body.touchUI .stage{border-bottom-color:transparent}
 
 /* ===== 手機版（橫向）：遊戲畫面置中，左邊 A／空白鍵，右邊方向鍵；直向時請玩家橫放 ===== */
 body.phoneUI{overflow:hidden;background:#050403}
-body.phoneUI .wrap{position:fixed!important;inset:0;max-width:none!important;width:100vw;height:100vh;height:100dvh;margin:0;padding:0!important;display:flex;align-items:center;justify-content:center}
+body.phoneUI .wrap{position:fixed!important;inset:0;max-width:none!important;width:100vw;height:calc(var(--vh,1vh)*100);margin:0;padding:0!important;display:flex;align-items:center;justify-content:center}
 body.phoneUI .wrap>h1,body.phoneUI .wrap>.sub,body.phoneUI #cfgArea{display:none!important}
-body.phoneUI .stage{position:relative;z-index:2;flex:none;width:min(150vh,150dvh,calc(100vw - 52vh));border:none}
-body.phoneUI #tpad{position:fixed!important;inset:0;z-index:1;display:flex!important;justify-content:space-between;align-items:center;padding:0 max(2vh,env(safe-area-inset-right,0px)) 0 max(2vh,env(safe-area-inset-left,0px))!important;background:#050403!important;border:none!important;pointer-events:none;margin:0!important;max-width:none!important}
+body.phoneUI .stage{position:relative;z-index:2;flex:none;width:min(calc(var(--vh,1vh)*150),calc(100vw - var(--vh,1vh)*52));border:none}
+body.phoneUI #tpad{position:fixed!important;inset:0;z-index:1;display:flex!important;justify-content:space-between;align-items:center;padding:0 max(calc(var(--vh,1vh)*2),env(safe-area-inset-right,0px)) 0 max(calc(var(--vh,1vh)*2),env(safe-area-inset-left,0px))!important;background:#050403!important;border:none!important;pointer-events:none;margin:0!important;max-width:none!important}
 body.phoneUI #tpad>.lt,body.phoneUI #tpad>.arr{pointer-events:auto;position:relative;z-index:3}
-body.phoneUI #tpad .lt{flex-direction:column-reverse;gap:5vh;width:22vh;align-items:center}
-body.phoneUI #tpad .kA{width:17vh;height:13vh}
-body.phoneUI #tpad .kS{width:20vh;height:22vh}
-body.phoneUI #tpad .arr{grid-template-columns:10vh 10vh 10vh;grid-template-rows:10vh 10vh;gap:.8vh;width:31.6vh}
-body.phoneUI #tpad .arr .tk{width:10vh;height:10vh;font-size:3.6vh;border-width:1.1vh}
-body.phoneUI #tpad .tk{font-size:3.4vh;border-width:1.4vh;border-image-width:1.4vh}
-body.phoneUI #tpad .tk small{font-size:2vh;margin-top:.4vh}
+body.phoneUI{--side:max(calc((100vw - var(--vh,1vh)*150)/2),calc(var(--vh,1vh)*26))}
+body.phoneUI #tpad .lt{flex-direction:column-reverse;gap:calc(var(--vh,1vh)*5);width:var(--side);align-items:center}
+body.phoneUI #tpad .kA{width:min(calc(var(--side)*.62),calc(var(--vh,1vh)*26));height:calc(var(--vh,1vh)*16)}
+body.phoneUI #tpad .kS{width:min(calc(var(--side)*.78),calc(var(--vh,1vh)*34));height:calc(var(--vh,1vh)*30)}
+body.phoneUI #tpad .arr{--cell:min(calc(var(--side)*.31),calc(var(--vh,1vh)*17));grid-template-columns:var(--cell) var(--cell) var(--cell);grid-template-rows:var(--cell) var(--cell);gap:calc(var(--vh,1vh)*1);width:var(--side);justify-content:center}
+body.phoneUI #tpad .arr .tk{width:var(--cell);height:var(--cell);font-size:calc(var(--cell)*.36);border-width:calc(var(--vh,1vh)*1.3)}
+body.phoneUI #tpad .tk{font-size:calc(var(--vh,1vh)*4.2);border-width:calc(var(--vh,1vh)*1.5)}
+body.phoneUI #tpad .tk small{font-size:calc(var(--vh,1vh)*2.4);margin-top:calc(var(--vh,1vh)*.5)}
+body.phoneUI #tpad{padding:0!important}
 #rotateHint{display:none}
 @media (orientation:portrait){body.phoneUI #rotateHint{display:flex;position:fixed;inset:0;z-index:999;background:#050403;color:#cbbd9d;flex-direction:column;align-items:center;justify-content:center;gap:2vh;font-size:5vw;letter-spacing:.2em;text-align:center}body.phoneUI #rotateHint small{font-size:3.4vw;color:#7d725f;letter-spacing:.1em}body.phoneUI #rotateHint .rhIcon{font-size:14vw;animation:rhRot 2.4s ease-in-out infinite}}
 @keyframes rhRot{0%,30%{transform:rotate(0)}55%,85%{transform:rotate(-90deg)}100%{transform:rotate(0)}}
@@ -4290,11 +4300,12 @@ $('tTrace').addEventListener('click',e=>{e.stopImmediatePropagation();try{audioI
 
 // ===== 平板的操作區：遊戲畫面下方，像鍵盤一樣的按鍵（劇情紀錄 A、空白鍵、方向鍵）=====
 (function(){const coarse=window.matchMedia&&matchMedia('(pointer: coarse)').matches,big=Math.min(screen.width,screen.height)>=600;let pv=0;try{pv=+localStorage.getItem('cave-padPreview')||0}catch(_){}let pp=0;try{pp=+localStorage.getItem('cave-phonePreview')||0}catch(_){}const phone=(coarse&&!big)||pp;if(!(coarse&&big)&&!pv&&!phone)return;
- document.body.classList.add('touchUI');if(phone){document.body.classList.add('phoneUI');const rh=document.createElement('div');rh.id='rotateHint';rh.innerHTML='<div class="rhIcon">📱</div><div>請將手機橫放</div><small>（橫向才能看清楚礦坑裡的一切）</small>';document.body.appendChild(rh);
+ document.body.classList.add('touchUI');if(phone){document.body.classList.add('phoneUI');const setVh=()=>{const h=(window.visualViewport&&window.visualViewport.height)||window.innerHeight;document.documentElement.style.setProperty('--vh',(h/100)+'px')};setVh();addEventListener('resize',setVh);try{visualViewport.addEventListener('resize',setVh)}catch(_){}addEventListener('orientationchange',()=>setTimeout(setVh,300));const rh=document.createElement('div');rh.id='rotateHint';rh.innerHTML='<div class="rhIcon">📱</div><div>請將手機橫放</div><small>（橫向才能看清楚礦坑裡的一切）</small>';document.body.appendChild(rh);
   const fs=document.createElement('button');fs.id='fsBtn';fs.textContent='全螢幕';fs.addEventListener('click',e=>{e.stopPropagation();const d=document.documentElement;try{if(!document.fullscreenElement&&d.requestFullscreen){d.requestFullscreen().then(()=>{try{screen.orientation.lock('landscape').catch(()=>{})}catch(_){}}).catch(()=>{})}else if(document.exitFullscreen)document.exitFullscreen()}catch(_){}});if(document.documentElement.requestFullscreen)document.body.appendChild(fs);
   if(pp&&!(coarse&&!big)){const x=document.createElement('button');x.id='ppOff';x.textContent='結束手機版預覽';x.addEventListener('click',e=>{e.stopPropagation();try{localStorage.setItem('cave-phonePreview','0')}catch(_){}location.reload()});document.body.appendChild(x)}}const st=$('stage'),pad=document.createElement('div');pad.id='tpad';
  pad.innerHTML='<div class="lt"><button class="tk kA" data-k="a" data-c="KeyA">A<small>劇情紀錄</small></button><button class="tk kS" data-k=" " data-c="Space">空白鍵<small>直落</small></button></div><div class="arr"><button class="tk kU" data-k="ArrowUp" data-c="ArrowUp" style="flex-direction:column">▲<small>旋轉</small></button><button class="tk kL" data-k="ArrowLeft" data-c="ArrowLeft" data-r="1">◀</button><button class="tk kD" data-k="ArrowDown" data-c="ArrowDown" data-r="1">▼</button><button class="tk kR" data-k="ArrowRight" data-c="ArrowRight" data-r="1">▶</button></div>';
  st.after(pad);
+ {const b0=pad.querySelector('.tk');const src=b0&&getComputedStyle(b0).borderImageSource;const m=src&&src.match(/url\("?(.*?)"?\)$/);if(m){const im=new Image();im.onload=()=>{try{const c=document.createElement('canvas');c.width=360;c.height=144;c.getContext('2d').drawImage(im,0,0,360,144);pad.style.setProperty('--tkf','url('+c.toDataURL('image/png')+')');pad.classList.add('pngf')}catch(_){}};im.src=m[1]}}
  // 操作區的背景：遊戲畫面下半部（礦道地面）像倒影一樣往下延伸，壓暗、模糊；上緣用漸層接起來，再加上緩緩漂動的空氣微粒
  {const bc=document.createElement('canvas');bc.id='tpadBg';pad.prepend(bc);const buf=document.createElement('canvas');let lastSnap=0;const motes=Array.from({length:36},()=>({x:Math.random(),y:Math.random(),z:.3+Math.random()*.9,ph:Math.random()*6,r:.6+Math.random()*1.3,dark:Math.random()<.35}));
   (function lp(ts){requestAnimationFrame(lp);if(!document.body.classList.contains('touchUI'))return;const W2=pad.clientWidth,H2=pad.clientHeight;if(!W2||!H2)return;const D=Math.min(2,window.devicePixelRatio||1);if(bc.width!==Math.round(W2*D)||bc.height!==Math.round(H2*D)){bc.width=Math.round(W2*D);bc.height=Math.round(H2*D);buf.width=bc.width;buf.height=bc.height;lastSnap=0}
