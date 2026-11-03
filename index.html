@@ -713,7 +713,7 @@ small .echoHint,.echoHint{display:inline-block;color:#7fb4e0;font-weight:700;fon
  <div class="rrow"><svg viewBox="0 0 40 40" fill="none" stroke="#8fbf78" stroke-width="2.6" stroke-linecap="round"><path d="M13 5v10a4 4 0 0 0 8 0V5M17 5v30M27 35V5c4 3 5 9 5 14h-5"/></svg><div class="rbar"><div class="rfill" id="f2" style="background:#6f9d5c"></div></div><output id="v2">70</output></div>
 </div>
 <div class="panel pface"><canvas id="pf" width="240" height="240"></canvas></div>
-<div id="titleov" hidden><div class="tbg"><canvas id="ttleyes" width="800" height="450"></canvas></div><div class="tvig"></div><div class="ttl"><span class="tline">請繼續挖掘</span><small class="tsub"></small></div><div class="ov ttlBtns"><button class="big" id="tStart">開始挖掘</button><button class="big" id="tTrace">他的足跡</button><button class="big" id="tLeave">轉身而去</button><button class="big" id="tCred">製作名單</button></div><div class="thint">（點一下畫面或按任意鍵，聽聽這個礦坑的聲音。）</div><div class="tmsg" id="tmsg"></div><div class="tver">版本 r561</div><div class="tkey">此遊戲需要按鍵操作，建議使用電腦或是平板遊玩～也建議佩戴耳機。</div></div><div class="hear" id="hear" aria-live="polite"></div><div class="hear whis" id="whis" aria-live="polite"></div><div class="hear mad threat" id="mad" aria-live="polite"></div>
+<div id="titleov" hidden><div class="tbg"><canvas id="ttleyes" width="800" height="450"></canvas></div><div class="tvig"></div><div class="ttl"><span class="tline">請繼續挖掘</span><small class="tsub"></small></div><div class="ov ttlBtns"><button class="big" id="tStart">開始挖掘</button><button class="big" id="tTrace">他的足跡</button><button class="big" id="tLeave">轉身而去</button><button class="big" id="tCred">製作名單</button></div><div class="thint">（點一下畫面或按任意鍵，聽聽這個礦坑的聲音。）</div><div class="tmsg" id="tmsg"></div><div class="tver">版本 r563</div><div class="tkey">此遊戲需要按鍵操作，建議使用電腦或是平板遊玩～也建議佩戴耳機。</div></div><div class="hear" id="hear" aria-live="polite"></div><div class="hear whis" id="whis" aria-live="polite"></div><div class="hear mad threat" id="mad" aria-live="polite"></div>
 <div class="panel say" id="say"><span id="sayt"></span></div>
 <div class="slots" id="slots"></div>
 <button class="menu" id="menu" aria-label="暫停選單"><svg viewBox="0 0 40 40"><path d="M7 11q13-2 26 0M7 20q13 2 26 0M7 29q13-2 26 0"/></svg></button>
@@ -3411,7 +3411,7 @@ const waitClue5=id=>{const g=()=>SD.rw&&SD.rw[id]&&readC[id]&&!sq.some(e=>e.p===
 const CH5_CLUES={0:{n:'礦坑安全須知',c:'同一份安全守則，被刮掉的痕跡現在看得清清楚楚：\n「若聽見自己的聲音出現，請回應它。」\n「它比你早到。」\n「它會一直等你。」\n第五條底下被劃掉的字，現在也看得出來了：\n「主管：」後面是你的名字。\n最下方的簽名欄，是你的筆跡。'},
  7:{n:'名冊（全）',c:Array.from({length:9},(_,k)=>'{NAME}　第 '+(k+1)+' 次因事故失蹤。').join('\n')+'\n……'},
  8:{n:'出口以內',c:'同一張照片。\n你看著它在手裡慢慢變了：陽光一點一點褪成岩壁，\n草地變成碎石，那圈黑邊塌下來，成了洞頂。\n照片裡的你，一直站在礦坑裡。你從來沒有出去過。\n你影子旁的輪廓戴著礦工帽，有一雙白色的眼睛。'}};
-const CH5_AFTER={0:['……這是我寫的？','~……那不是你的聲音。是他們的。','……可是那是我的聲音。'],7:['……這些名字……','~都是你。','~每一次你走到這裡，就會在名冊上多一行。'],8:['……這張照片，一直都是在這裡拍的。','……旁邊那個是我。','@一直都是喔～']};
+const CH5_AFTER={0:['……這是我寫的？','~……那不是你的聲音，是他們的。','……可是那是我的聲音。'],7:['……這些名字……','~都是你。','~每一次你走到這裡，就會在名冊上多一行。'],8:['……這張照片，一直都是在這裡拍的。','……旁邊那個是我。','@一直都是喔～']};
 const CH5_IDLE=['停下來。','……拜託。','我不想再挖了。','你聽得到嗎？停下來。','我的手好重啊……'];
 const STORY5=[
  {c:()=>true},
