@@ -365,7 +365,7 @@ input[type=range]{width:100%;accent-color:var(--acc)}
 .scrib{position:absolute;inset:-10%;width:120%;height:120%;pointer-events:none}
 .scrib path{stroke-dasharray:600;stroke-dashoffset:600;animation:scr .45s linear forwards}
 @keyframes scr{to{stroke-dashoffset:0}}
-#cx.veiled{filter:url(#hwarp2) blur(3px) brightness(.4);user-select:none;animation:tjit .08s infinite}
+#cx.veiled{filter:url(#hwarp2) blur(3px) brightness(.4);user-select:none;animation:tjit .22s steps(2) infinite}
 #veilfx{position:absolute;pointer-events:none;z-index:3}
 #cx.veiled::after{content:"";position:absolute;inset:0}
 #ov.lampDie .lamp{animation:lampDie .95s steps(1,end) forwards}
@@ -801,6 +801,9 @@ small .echoHint,.echoHint{display:inline-block;color:#7fb4e0;font-weight:700;fon
 #logbox .lclue{margin:.6cqw 0;padding:.7cqw 1.1cqw;border-left:.25cqw solid rgba(201,162,74,.6);background:rgba(201,162,74,.06);font-size:1.3cqw;line-height:1.6;white-space:pre-line;color:#e2d4b8}
 #logbox .lclue b{display:block;font-size:1.05cqw;letter-spacing:.2em;color:#c9a24a;margin-bottom:.2cqw}
 #logbox .lpick{margin:.6cqw 0;padding:.55cqw 1.1cqw;border-left:.25cqw solid rgba(143,168,200,.65);background:rgba(143,168,200,.07);font-size:1.25cqw;color:#d8dfe8}
+
+/* 效能：回音、低語的字沒有顯示時，背後的煙霧動畫暫停 */
+.hear:not(.on)::after{animation-play-state:paused!important}
 #cfgArea{display:none!important}
 </style>
 </head>
@@ -819,7 +822,7 @@ small .echoHint,.echoHint{display:inline-block;color:#7fb4e0;font-weight:700;fon
  <div class="rrow"><svg viewBox="0 0 40 40" fill="none" stroke="#8fbf78" stroke-width="2.6" stroke-linecap="round"><path d="M13 5v10a4 4 0 0 0 8 0V5M17 5v30M27 35V5c4 3 5 9 5 14h-5"/></svg><div class="rbar"><div class="rfill" id="f2" style="background:#6f9d5c"></div></div><output id="v2">70</output></div>
 </div>
 <div class="panel pface"><canvas id="pf" width="240" height="240"></canvas></div>
-<div id="titleov" hidden><div class="tbg"><canvas id="ttleyes" width="800" height="450"></canvas></div><div class="tvig"></div><div class="ttl"><span class="tline">請繼續挖掘</span><small class="tsub"></small></div><div class="ov ttlBtns"><button class="big" id="tStart">開始挖掘</button><button class="big" id="tTrace">他的足跡</button><button class="big" id="tLeave">轉身而去</button><button class="big" id="tSet">設定</button><button class="big" id="tCred">製作名單</button></div><div class="thint">（點一下畫面或按任意鍵，聽聽這個礦坑的聲音。）</div><div class="tmsg" id="tmsg"></div><div class="tver">版本 r861</div><div class="tkey">此遊戲需要按鍵操作，建議使用電腦或是平板遊玩～也建議佩戴耳機。<br><b class="tkeyW">⚠ 該遊戲網頁資源需求可能較高，若有LAG狀況，會建議只單開這視窗遊玩。</b></div></div><div class="hear" id="hear" aria-live="polite"></div><div class="hear whis" id="whis" aria-live="polite"></div><div class="hear mad threat" id="mad" aria-live="polite"></div>
+<div id="titleov" hidden><div class="tbg"><canvas id="ttleyes" width="800" height="450"></canvas></div><div class="tvig"></div><div class="ttl"><span class="tline">請繼續挖掘</span><small class="tsub"></small></div><div class="ov ttlBtns"><button class="big" id="tStart">開始挖掘</button><button class="big" id="tTrace">他的足跡</button><button class="big" id="tLeave">轉身而去</button><button class="big" id="tSet">設定</button><button class="big" id="tCred">製作名單</button></div><div class="thint">（點一下畫面或按任意鍵，聽聽這個礦坑的聲音。）</div><div class="tmsg" id="tmsg"></div><div class="tver">版本 r863</div><div class="tkey">此遊戲需要按鍵操作，建議使用電腦或是平板遊玩～也建議佩戴耳機。<br><b class="tkeyW">⚠ 該遊戲網頁資源需求可能較高，若有LAG狀況，會建議只單開這視窗遊玩。</b></div></div><div class="hear" id="hear" aria-live="polite"></div><div class="hear whis" id="whis" aria-live="polite"></div><div class="hear mad threat" id="mad" aria-live="polite"></div>
 <div class="panel say" id="say"><span id="sayt"></span></div>
 <div class="slots" id="slots"></div>
 <button class="menu" id="menu" aria-label="暫停選單"><svg viewBox="0 0 40 40"><path d="M7 11q13-2 26 0M7 20q13 2 26 0M7 29q13-2 26 0"/></svg></button>
