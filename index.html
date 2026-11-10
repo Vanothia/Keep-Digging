@@ -819,7 +819,7 @@ small .echoHint,.echoHint{display:inline-block;color:#7fb4e0;font-weight:700;fon
  <div class="rrow"><svg viewBox="0 0 40 40" fill="none" stroke="#8fbf78" stroke-width="2.6" stroke-linecap="round"><path d="M13 5v10a4 4 0 0 0 8 0V5M17 5v30M27 35V5c4 3 5 9 5 14h-5"/></svg><div class="rbar"><div class="rfill" id="f2" style="background:#6f9d5c"></div></div><output id="v2">70</output></div>
 </div>
 <div class="panel pface"><canvas id="pf" width="240" height="240"></canvas></div>
-<div id="titleov" hidden><div class="tbg"><canvas id="ttleyes" width="800" height="450"></canvas></div><div class="tvig"></div><div class="ttl"><span class="tline">請繼續挖掘</span><small class="tsub"></small></div><div class="ov ttlBtns"><button class="big" id="tStart">開始挖掘</button><button class="big" id="tTrace">他的足跡</button><button class="big" id="tLeave">轉身而去</button><button class="big" id="tSet">設定</button><button class="big" id="tCred">製作名單</button></div><div class="thint">（點一下畫面或按任意鍵，聽聽這個礦坑的聲音。）</div><div class="tmsg" id="tmsg"></div><div class="tver">版本 r857</div><div class="tkey">此遊戲需要按鍵操作，建議使用電腦或是平板遊玩～也建議佩戴耳機。<br><b class="tkeyW">⚠ 該遊戲網頁資源需求可能較高，若有LAG狀況，會建議只單開這視窗遊玩。</b></div></div><div class="hear" id="hear" aria-live="polite"></div><div class="hear whis" id="whis" aria-live="polite"></div><div class="hear mad threat" id="mad" aria-live="polite"></div>
+<div id="titleov" hidden><div class="tbg"><canvas id="ttleyes" width="800" height="450"></canvas></div><div class="tvig"></div><div class="ttl"><span class="tline">請繼續挖掘</span><small class="tsub"></small></div><div class="ov ttlBtns"><button class="big" id="tStart">開始挖掘</button><button class="big" id="tTrace">他的足跡</button><button class="big" id="tLeave">轉身而去</button><button class="big" id="tSet">設定</button><button class="big" id="tCred">製作名單</button></div><div class="thint">（點一下畫面或按任意鍵，聽聽這個礦坑的聲音。）</div><div class="tmsg" id="tmsg"></div><div class="tver">版本 r861</div><div class="tkey">此遊戲需要按鍵操作，建議使用電腦或是平板遊玩～也建議佩戴耳機。<br><b class="tkeyW">⚠ 該遊戲網頁資源需求可能較高，若有LAG狀況，會建議只單開這視窗遊玩。</b></div></div><div class="hear" id="hear" aria-live="polite"></div><div class="hear whis" id="whis" aria-live="polite"></div><div class="hear mad threat" id="mad" aria-live="polite"></div>
 <div class="panel say" id="say"><span id="sayt"></span></div>
 <div class="slots" id="slots"></div>
 <button class="menu" id="menu" aria-label="暫停選單"><svg viewBox="0 0 40 40"><path d="M7 11q13-2 26 0M7 20q13 2 26 0M7 29q13-2 26 0"/></svg></button>
@@ -1144,8 +1144,10 @@ function genWalls(){let a=1,b=1,c=1;const st=()=>{const r=Math.random();return r
 // 暫定，待劇本定稿
 let hearAt=12;
 // 地震後在各處新增方塊（不碰出生區）；懸空的有一部分會卡住
-function placeQuakeBlocks(n){const cs=[];for(let y=6;y<H;y++)for(let x=0;x<W;x++)if(!grid[y][x])cs.push([x,y]);shuffle(cs);let k=0;
- for(const [x,y] of cs){if(k>=n)break;const air=y<H-1&&!grid[y+1][x],fx=air&&Math.random()<.6?1:0;
+function placeQuakeBlocks(n){// 地震震出來的新方塊：只放在有東西撐著的位置（不會憑空出現在半空中），也避開正在落下的方塊附近
+ const near=new Set();try{if(cur&&cur.c)cur.c.forEach(([a,bb])=>{for(let dx=-1;dx<=1;dx++)for(let dy=-1;dy<=3;dy++)near.add((cur.x+a+dx)+','+(cur.y+bb+dy))})}catch(_){}
+ const cs=[];for(let y=6;y<H;y++)for(let x=0;x<W;x++)if(!grid[y][x]&&(y===H-1||grid[y+1][x])&&!near.has(x+','+y))cs.push([x,y]);shuffle(cs);let k=0;
+ for(const [x,y] of cs){if(k>=n)break;const fx=0;
   grid[y][x]={k:Math.random()<.85?Math.random()*3|0:3,fix:fx,c:0,e:0,s:Math.random()*1000,oy:0,vy:0,ap:t};for(let i=0;i<5;i++)ps.push(puff((x+.5)*CS,(y+.5)*CS));k++}return k}
 // 地層上浮：底下冒出彩色石塊，像島嶼一樣把上方往上頂
 function uplift(){let changed=0;const bm=SD.boost||1;SD.boost=0;const isl=Math.round((3+Math.floor(Math.random()*2))*bm);
@@ -1163,7 +1165,7 @@ function rollRocks(){let k=0;const cols=shuffle([...Array(W).keys()]);
  return k}
 function placeStuck(n){const x0=(W/2-2)|0,safe=x=>x>=x0-5&&x<=x0+8;/* 出生區：中間 7 欄 × 上方 8 排一律不放 */let placed=0,tries=0;const SHP=[[1,1],[2,1],[3,1],[1,2]];
  n=Math.max(1,Math.ceil(n*.5));while(placed<n&&tries<80){tries++;const [w,h]=pick(SHP),x=1+(Math.random()*(W-1-w)|0),y=Math.max(8,(H/2)|0)+(Math.random()*Math.max(1,H-4-h-Math.max(8,(H/2)|0))|0);
-  let ok=true;for(let dy=-2;dy<=h+1;dy++)for(let dx=-2;dx<=w+1;dx++){const xx=x+dx,yy=y+dy;if(xx<0||xx>=W||yy<0||yy>=H)continue;if(grid[yy][xx])ok=false}for(let dx=0;dx<w;dx++)if(safe(x+dx))ok=false;if(!ok)continue;
+  let ok=true;for(let dy=-2;dy<=h+1;dy++)for(let dx=-2;dx<=w+1;dx++){const xx=x+dx,yy=y+dy;if(xx<0||xx>=W||yy<0||yy>=H)continue;if(grid[yy][xx])ok=false}for(let dx=0;dx<w;dx++)if(safe(x+dx))ok=false;try{if(cur&&cur.c)cur.c.forEach(([ca,cb])=>{const cx=cur.x+ca,cy=cur.y+cb;if(cx>=x-2&&cx<=x+w+1&&cy>=y-3&&cy<=y+h+1)ok=false})}catch(_){}if(!ok)continue;
   const colored=Math.random()<.35,col=Math.random()*3|0,star=colored&&Math.random()<.3?(Math.random()*w*h|0):-1;let q=0;
   for(let dy=0;dy<h;dy++)for(let dx=0;dx<w;dx++){grid[y+dy][x+dx]={k:colored?col:3,fix:1,c:0,e:q===star?1:0,s:Math.random()*1000,oy:0,vy:0,ap:t};q++;for(let i=0;i<4;i++)ps.push(puff((x+dx+.5)*CS,(y+dy+.5)*CS))}placed+=w*h}
  return placed}
@@ -2941,8 +2943,8 @@ function draw(){
  const f=clamp(res[0]/100),f2=clamp(1-(1-f)*cfg.vig),fl=1+.025*Math.sin(now*9+Math.sin(now*3)*2),rin=(cfg.vmin+Math.pow(f2,1.8)*(980-cfg.vmin))*fl;
  if(f2<.7){mx.fillStyle='rgba(0,0,0,'+((.7-f2)*.5)+')';mx.fillRect(0,0,CW,CH)}
  if(rin<1150){const gr=mx.createRadialGradient(LX,LY,rin,LX,LY,rin+260);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(.5,'rgba(0,0,0,.7)');gr.addColorStop(1,'rgba(0,0,0,.98)');mx.fillStyle=gr;mx.fillRect(0,0,CW,CH)}
- if(sf>0){const pl=.55+.45*Math.sin(now*(2+sf*3));const rg=mx.createRadialGradient(CW/2,CH/2,300,CW/2,CH/2,760);
-  rg.addColorStop(0,'rgba(60,70,20,0)');rg.addColorStop(1,'rgba(60,75,20,'+(.35*sf*pl)+')');mx.fillStyle=rg;mx.fillRect(0,0,CW,CH)}
+ {const dk=(SD.ch5||(SD.ng&&!SD.ngAlive)||dead)?0:Math.max(sf,clamp((40-Math.min(res[0],res[1],res[2]))/40));if(dk>0){const sf=dk;const pl=.55+.45*Math.sin(now*(2+sf*3));const rg=mx.createRadialGradient(CW/2,CH/2,300,CW/2,CH/2,760);
+  rg.addColorStop(0,'rgba(150,20,14,0)');rg.addColorStop(1,'rgba(165,24,16,'+(.42*sf*pl)+')');mx.fillStyle=rg;mx.fillRect(0,0,CW,CH)}}
  
  for(let k=0;k<3;k++){$('f'+k).style.width=clamp(res[k]/100)*100+'%';$('v'+k).textContent=Math.max(0,res[k]).toFixed(0)}
  $('dist').textContent=dist.toFixed(0);$('spd').textContent=spdNow.toFixed(1);$('day').textContent=Math.max(1,day);
@@ -5043,16 +5045,28 @@ $('tSet').addEventListener('click',()=>{setTimeout(()=>{try{document.querySelect
 // 已經拿到、讀過的線索，方塊區上殘留的同一顆星光會收回（例如被地震震到半空中的那顆），避免消掉卻沒有任何東西
 setInterval(()=>{try{if(!run||SD.ch5)return;for(let y=0;y<H;y++)for(let x=0;x<W;x++){const o=grid[y][x];if(o&&o.c&&clueState[o.c-1]===2&&readC[o.c-1])o.c=0}}catch(_){}},700);
 // 地震對版面的影響更大：震完之後隨機二選一——崩落（最底下兩排的一部分方塊碎掉）或擠壓（在各欄的頂上多堆一塊方塊）；都不會產生懸在空中的石頭
-function quakeShift(n){if(!run||dead||SD.tool)return;if(clr||holdFn||settleFn){if((n||0)<20)setTimeout(()=>quakeShift((n||0)+1),150);return}
- const up=Math.random()<.5;if(!up){const rows=[];for(let y=H-1;y>=0&&rows.length<2;y--){if(grid[y].some(o=>o&&!o.wall))rows.push(y)}const cells=[];rows.forEach(y=>{for(let x=0;x<W;x++){const o=grid[y][x];if(o&&!o.wall&&!o.c&&!o.e&&!o.crack&&!o.fix)cells.push([x,y])}});shuffle(cells).slice(0,Math.ceil(cells.length*.35)).forEach(([x,y])=>{try{burst(x,y,grid[y][x].k,3,true)}catch(_){}grid[y][x]=null});try{sfx('crumble')}catch(_){}}
- else{const cols=shuffle([...Array(W).keys()]).slice(0,Math.ceil(W*.5));cols.forEach(x=>{let y0=H;for(let y=0;y<H;y++){if(grid[y][x]){y0=y;break}}const y=y0-1;if(y<3)return;if(grid[y][x])return;grid[y][x]={k:Math.random()*3|0,s:Math.random()*9|0}});try{sfx('thud')}catch(_){}}
- wallDirty=true;try{settleThen(()=>startClear([]))}catch(_){}}
+function quakeShift(n){if(!run||dead||SD.tool)return;if(clr||holdFn||settleFn||paused||godOpen){if((n||0)<30)setTimeout(()=>quakeShift((n||0)+1),150);return}
+ // 正在落下的方塊佔住的欄位不動，避免新方塊和它重疊、或在它旁邊憑空冒出來
+ const curCols=new Set();try{if(cur&&cur.c)cur.c.forEach(([a])=>curCols.add(cur.x+a))}catch(_){}
+ const up=Math.random()<.5;
+ if(!up){const rows=[];for(let y=H-1;y>=0&&rows.length<2;y--){if(grid[y].some(o=>o&&!o.wall))rows.push(y)}const cells=[];rows.forEach(y=>{for(let x=0;x<W;x++){const o=grid[y][x];if(o&&!o.wall&&!o.c&&!o.e&&!o.crack&&!o.fix)cells.push([x,y])}});shuffle(cells).slice(0,Math.ceil(cells.length*.35)).forEach(([x,y])=>{try{burst(x,y,grid[y][x].k,3,true)}catch(_){}grid[y][x]=null});try{sfx('crumble')}catch(_){}}
+ else{
+  // 只加在「從底部一路堆上來、中間沒有空隙」的欄位頂端，不會產生懸在空中的方塊
+  const ok=[];for(let x=0;x<W;x++){if(curCols.has(x))continue;let y0=-1;for(let y=0;y<H;y++){if(grid[y][x]){y0=y;break}}if(y0<4)continue;let solid=true;for(let y=y0;y<H;y++){if(!grid[y][x]){solid=false;break}}if(!solid)continue;if(grid[y0][x].fix)continue;ok.push([x,y0-1])}
+  shuffle(ok).slice(0,Math.ceil(W*.5)).forEach(([x,y])=>{grid[y][x]={k:Math.random()*3|0,s:Math.random()*9|0}});try{sfx('thud')}catch(_){}}
+ wallDirty=true;
+ // 只讓方塊往下掉到定位，不觸發消除與新方塊（不會換掉正在落下的那一塊）
+ try{gravity()}catch(_){}}
 {const _sq2=startQuake;startQuake=function(){const r=_sq2.apply(this,arguments);setTimeout(()=>quakeShift(0),2300);return r}}
 // 場地特殊事件的反應台詞：當下沒有別的台詞在說才說，錯過時機就算了（不排隊延遲）
 function evSeq(a){try{if(sq.length)return;seqArr(a)}catch(_){}}
 
 // 死亡後「原地回來」：和普通結局後回到遊戲畫面一樣，用全屏雜訊閃回
 {const _sr2=startRun;startRun=function(m){const r=_sr2.apply(this,arguments);if(m==='cont'){try{flashFx('0,0,0',.9);noiseBurst(1100)}catch(_){}}return r}}
+
+// 地震後：出生區（中間幾欄、上方 8 排）裡的懸石不會卡住，讓它掉下去，避免擋住剛出生的方塊組
+function clearSpawnStuck(){try{const x0=(W/2-2)|0;for(let y=0;y<Math.min(H,9);y++)for(let x=Math.max(0,x0-3);x<=Math.min(W-1,x0+6);x++){const o=grid[y][x];if(o&&!o.wall&&o.fix){o.fix=0}}gravity();wallDirty=true}catch(_){}}
+{const _sq3=startQuake;startQuake=function(){const r=_sq3.apply(this,arguments);setTimeout(clearSpawnStuck,60);setTimeout(clearSpawnStuck,2500);return r}}
 function hideTitle(cb){const T=$('titleov');T.classList.add('out');setTimeout(()=>{T.hidden=true;titleOn=false;T.classList.remove('out');cb&&cb()},900)}
 function tResetWire(p,T){$('tReset').addEventListener('click',()=>{sfx('click');p.innerHTML='<div>確定要重置遊戲嗎？</div><div class="tpi">存檔、看過的結局、天數都會被清除，<br>回到第一次打開時的樣子。</div><div class="tpRow"><button class="big" id="tRsY">對</button><button class="big" id="tRsN">先不要</button></div>';
   $('tRsN').addEventListener('click',()=>{sfx('click');p.remove();T.querySelector('.ttlBtns').style.visibility='';$('tTrace').click()});
